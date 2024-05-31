@@ -65,6 +65,20 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   }
 });
 
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  let isbn = req.params.isbn;
+  let user = req.user; //added with the login if missing shouldn't pass at all
+  let book = books[isbn];
+  if (book) {
+    //nothing gets saved because this is a toy example that doesn't use DBs.
+    delete book["reviews"][user.username]; //only deletes the review of the username we have logged in
+    return res.status(200).json({message : "review added"});
+  }
+  else {
+    return res.status(404).json({message : `Could not find book with the following isbn code : ${isbn}`});
+  }
+});
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
