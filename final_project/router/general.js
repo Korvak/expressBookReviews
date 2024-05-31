@@ -20,17 +20,17 @@ public_users.post("/register", (req,res) => {
         "email" : email
       });
       console.log(users);
-      return res.status(200).json({message : `Created user : ${username}`});
+      return res.status(200).json({message : `Created user : ${username} now you can login`});
   }
   else {
-    return res.status(501).json({message : "The username is already taken."});
+    return res.status(501).json({message : `The username : ${username} is already taken.`});
   }
 });
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   //Write your code here
-  return res.send(books);
+  return res.send({"books" : books});
 });
 
 // Get book details based on ISBN
@@ -40,12 +40,27 @@ public_users.get('/isbn/:isbn',function (req, res) {
   let book = books[isbn];
   return book ? res.send(book) : res.status(404).json({message: `A book with isbn code ${isbn} was not found.`});
  });
+
+//get all books by isbn search
+public_users.get('/isbn/search/:isbn', function(req, res) {
+    let isbn = req.params.isbn;
+    if (!isbn) {
+      return res.status(400).json({message : "missing isbn code"});
+    }
+    isbn = isbn.toLowerCase();
+    let bookIsbns = Object.keys(books).filter(x => x.toLowerCase().startsWith(isbn));
+    let results = [];
+    for (let isbn in bookIsbns) {
+      results.push( books[isbn]);
+    }
+    return res.send(results);
+});
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
   let author = req.params.author.toLowerCase();
-  let filtered = Object.values(books).filter(x => x.author.toLowerCase() == author);
+  let filtered = Object.values(books).filter(x => x.author.toLowerCase().startsWith(author) );
   return res.send(filtered);
 });
 
@@ -53,7 +68,7 @@ public_users.get('/author/:author',function (req, res) {
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
   let title = req.params.title.toLowerCase();
-  let filtered = Object.values(books).filter(x => x.title.toLowerCase() == title);
+  let filtered = Object.values(books).filter(x => x.title.toLowerCase().startsWith(title) );
   return res.send(filtered);
 });
 

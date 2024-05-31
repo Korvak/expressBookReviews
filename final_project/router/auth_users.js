@@ -33,7 +33,7 @@ regd_users.post("/login", (req,res) => {
         "username" : username,
         "password" : password
       },
-      "ADLWEUIW3229371ADWKLAJ£221",
+      "ADLWEUIW3229371ADWKLAJ£221", //this requires a Configuration service and a secrets or environment variables system
        { expiresIn: "1h"});
     //we register it in the session
     req.session.authorization = {
@@ -58,13 +58,14 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   if (book) {
     //nothing gets saved because this is a toy example that doesn't use DBs.
     book["reviews"][user.username] = review; //only one per user per book can exist
-    return res.status(200).json({message : "review added"});
+    return res.status(200).json({message : `review added to the following book : ${isbn}`});
   }
   else {
     return res.status(404).json({message : `Could not find book with the following isbn code : ${isbn}`});
   }
 });
 
+//delete a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
   let isbn = req.params.isbn;
   let user = req.user; //added with the login if missing shouldn't pass at all
@@ -72,7 +73,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
   if (book) {
     //nothing gets saved because this is a toy example that doesn't use DBs.
     delete book["reviews"][user.username]; //only deletes the review of the username we have logged in
-    return res.status(200).json({message : "review added"});
+    return res.status(200).json({message : `review deleted from the following book : ${isbn}`});
   }
   else {
     return res.status(404).json({message : `Could not find book with the following isbn code : ${isbn}`});

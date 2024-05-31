@@ -10,5 +10,5 @@ let books = {
       9: {"author": "Honor\u00e9 de Balzac","title": "Le P\u00e8re Goriot", "reviews": {} },
       10: {"author": "Samuel Beckett","title": "Molloy, Malone Dies, The Unnamable, the trilogy", "reviews": {} }
 }
-
+//this should be wrapped in a repository which gets only called by a specific service
 module.exports=books;
